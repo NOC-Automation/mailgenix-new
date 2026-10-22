@@ -1,0 +1,4 @@
+customer_name,customer_site,floor_level,rack_location,validity,due_date,authorized_name,authorized_email,authorized_phone,additional_mailing_list
+PT Example Customer,JKT2,Level 1,RACK-A01,Valid,2027-12-31,Andi Example,andi@example.com,081234567890,ops@example.com; management@example.com
+PT Example Customer,JKT2,Level 4,RACK-4A01,Valid,2027-12-31,Budi Example,budi@example.com,081234567891,ops@example.com; management@example.com
+PT Example Customer,JKT2,Level 7,RACK-7A01,Valid,2027-12-31,Citra Example,citra@example.com,081234567892,ops@example.com; management@example.com

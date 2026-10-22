@@ -1,0 +1,64 @@
+<!-- components/logout_component.html (Tailwind) CLEAN -->
+<div class="relative">
+  <!-- User button / menu trigger: avatar circle only, no username text -->
+  <button id="userMenuButton" type="button"
+    class="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    aria-haspopup="true" aria-expanded="false" data-menu-button>
+    <span
+      class="inline-grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-white uppercase text-xs font-semibold">
+      {{ user.username|first }}
+    </span>
+    <svg class="h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <!-- Dropdown menu -->
+  <div
+    class="absolute right-0 z-20 mt-2 w-44 origin-top-right rounded-md border border-gray-200 bg-white shadow-lg focus:outline-none hidden"
+    role="menu" aria-orientation="vertical" tabindex="-1" data-menu>
+    <button type="button" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+      data-modal-open="#logoutModal" role="menuitem" tabindex="-1">
+      Logout
+    </button>
+  </div>
+</div>
+
+<!-- Modal Konfirmasi Logout (Tailwind) -->
+<div id="logoutModal" class="fixed inset-0 z-40 hidden" aria-labelledby="logoutModalLabel" aria-hidden="true"
+  role="dialog">
+  <!-- backdrop -->
+  <div class="fixed inset-0 bg-black/40" data-modal-close></div>
+
+  <!-- modal dialog -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-md overflow-hidden rounded-lg bg-white shadow-xl">
+      <div class="flex items-center justify-between border-b px-4 py-3">
+        <h5 id="logoutModalLabel" class="text-base font-semibold text-gray-900">Konfirmasi Logout</h5>
+        <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" data-modal-close>
+          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="px-4 py-3 text-gray-800">
+        Apakah Anda yakin ingin logout?
+      </div>
+      <div class="flex items-center justify-end gap-2 border-t px-4 py-3">
+        <button type="button"
+          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          data-modal-close>
+          Batal
+        </button>
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit"
+            class="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+            Logout
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

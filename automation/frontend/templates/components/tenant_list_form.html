@@ -1,0 +1,199 @@
+{% load static %}
+<div id="tenantWorkspace" class="tenant-workspace tenant-workspace-v18">
+  <div class="tenant-workspace-toolbar tenant-workspace-toolbar-v18">
+    <div>
+      <p class="mg-eyebrow">Customer Directory</p>
+      <h4 class="tenant-workspace-title">Customer Workspace</h4>
+      <p class="tenant-workspace-subtitle">Kelola customer, seluruh lokasi/rack, Authorized Person, Support Group, Contractor/WAF, dan Visitor/AVE dari satu workspace.</p>
+    </div>
+    {% if is_admin %}
+    <div class="tenant-workspace-actions">
+      <a href="/api/customers/import-csv/template/" class="workspace-secondary-btn">CSV Template</a>
+      <button type="button" id="tenantWorkspaceImportBtn" class="workspace-secondary-btn">Import CSV</button>
+      <button type="button" id="tenantWorkspaceAddBtn" class="workspace-primary-btn">+ Add Customer</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <section class="customer-explorer-shell customer-explorer-shell-v18">
+    <aside class="customer-explorer-sidebar">
+      <div class="customer-search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="customerExplorerSearch" type="search" placeholder="Search customer..." autocomplete="off" />
+      </div>
+      <div class="customer-status-legend">
+        <span><i class="status-dot status-active"></i>Active</span>
+        <span><i class="status-dot status-expiring"></i>Expiring Soon</span>
+        <span><i class="status-dot status-expired"></i>Expired</span>
+      </div>
+      <div id="customerExplorerSites" class="customer-site-groups">
+        <div class="customer-explorer-loading">Loading customers...</div>
+      </div>
+    </aside>
+
+    <div class="customer-detail-panel">
+      <div id="customerWorkspaceEmpty" class="customer-empty-state">
+        <div class="customer-empty-icon">⌂</div>
+        <h4>Select a customer</h4>
+        <p>Pilih customer dari daftar untuk melihat informasi tenant secara lengkap.</p>
+      </div>
+
+      <div id="customerWorkspaceContent" class="hidden">
+        <div class="customer-detail-header">
+          <div>
+            <div class="customer-title-line">
+              <h3 id="customerWorkspaceName">-</h3>
+              <span id="customerWorkspaceStatus" class="customer-status-badge">Active</span>
+            </div>
+            <p id="customerWorkspaceSiteContext" class="customer-context-text">All registered locations</p>
+          </div>
+          {% if is_admin %}
+          <a id="customerWorkspaceEdit" href="#" class="workspace-secondary-btn">Edit Customer</a>
+          {% endif %}
+        </div>
+
+        <div class="customer-metric-grid">
+          <div class="customer-metric-card"><span>Locations / Racks</span><strong id="metricLocations">0</strong></div>
+          <div class="customer-metric-card"><span>Authorized Person</span><strong id="metricAuthorized">0</strong></div>
+          <div class="customer-metric-card"><span>Support Group</span><strong id="metricSupport">0</strong></div>
+          <div class="customer-metric-card"><span>Next Validity</span><strong id="metricValidity">-</strong></div>
+        </div>
+
+        <div class="customer-section-nav" role="tablist">
+          <button type="button" class="customer-section-btn active" data-customer-section="overview">Locations / Racks</button>
+          <button type="button" class="customer-section-btn" data-customer-section="authorized">Authorized Persons</button>
+          <button type="button" class="customer-section-btn" data-customer-section="mailing">Additional Mailing Lists</button>
+          <button type="button" class="customer-section-btn" data-customer-section="support">Support Group</button>
+          <button type="button" class="customer-section-btn" data-customer-section="contractor">Contractor / WAF</button>
+          <button type="button" class="customer-section-btn" data-customer-section="visitor">Visitor / AVE</button>
+        </div>
+
+        <section class="customer-detail-section" data-customer-panel="overview">
+          <div class="section-heading-row">
+            <div><h4>Locations / Racks</h4><p>Satu customer dapat memiliki banyak rack pada site dan floor yang berbeda.</p></div>
+          </div>
+          <div class="workspace-table-wrap">
+            <table class="workspace-table">
+              <thead><tr><th>Site</th><th>Floor / Level</th><th>Rack Location</th><th>Description</th></tr></thead>
+              <tbody id="customerLocationsBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="customer-detail-section hidden" data-customer-panel="authorized">
+          <div class="section-heading-row">
+            <div><h4>Authorized Persons (PPOC / SPOC)</h4><p>Authorized Person adalah contact customer secara keseluruhan dan tidak dikunci ke satu rack.</p></div>
+          </div>
+          <div class="workspace-table-wrap">
+            <table class="workspace-table">
+              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Validity Date</th><th>Status</th></tr></thead>
+              <tbody id="customerAuthorizedBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="customer-detail-section hidden" data-customer-panel="mailing">
+          <div class="section-heading-row">
+            <div><h4>Additional Mailing Lists</h4><p>Specific Customer → CC. Site/Floor atau Dynamic Mailing Group bulk → BCC.</p></div>
+          </div>
+          <div class="workspace-table-wrap">
+            <table class="workspace-table">
+              <thead><tr><th>No.</th><th>Mailing List Email</th><th>Recipient Behavior</th></tr></thead>
+              <tbody id="customerAdditionalMailingBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="customer-detail-section hidden" data-customer-panel="support">
+          <div class="section-heading-row">
+            <div><h4>Support Group</h4><p>Personel pendukung customer, access reference, dan masa berlaku.</p></div>
+            <div class="flex flex-wrap gap-2">
+              {% if is_admin %}
+              <a href="/api/support-groups/import-csv/template/" class="workspace-secondary-btn">CSV Template</a>
+              <button type="button" id="supportGroupImportBtn" class="workspace-secondary-btn">Import CSV</button>
+              {% endif %}
+              <button type="button" id="supportGroupAddBtn" class="workspace-primary-btn">+ Add Support Group</button>
+            </div>
+          </div>
+          <div class="workspace-table-wrap">
+            <table class="workspace-table support-table">
+              <thead><tr><th>Name</th><th>NRIC / Passport</th><th>Access Level</th><th>Email / Phone</th><th>Ref: CAR/ESG etc</th><th>Validity</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="customerSupportBody"></tbody>
+            </table>
+          </div>
+
+          <form id="supportGroupForm" class="support-editor hidden">
+            <input type="hidden" id="supportGroupId" />
+            <div class="support-editor-heading"><div><h5 id="supportFormTitle">Add Support Group</h5><p>Semua field berupa teks, kecuali validity. Status dihitung otomatis dari validity date.</p></div><button type="button" id="supportFormClose" aria-label="Close">×</button></div>
+            <div class="support-form-grid">
+              <label><span>Name *</span><input id="supportName" type="text" required /></label>
+              <label><span>NRIC / Passport</span><input id="supportIdentity" type="text" /></label>
+              <label><span>Access Level</span><input id="supportAccess" type="text" /></label>
+              <label><span>Email / Phone</span><input id="supportEmailPhone" type="text" /></label>
+              <label><span>Ref: CAR/ESG etc</span><input id="supportReference" type="text" /></label>
+              <label><span>Notes</span><input id="supportNotes" type="text" /></label>
+              <label><span>Location / Rack</span><select id="supportRack"><option value="">All / Not specified</option></select></label>
+              <label><span>Validity</span><input id="supportValidity" type="date" /></label>
+              
+            </div>
+            <div class="support-editor-actions"><button type="button" id="supportCancelBtn" class="workspace-secondary-btn">Cancel</button><button type="submit" class="workspace-primary-btn">Save Support Group</button></div>
+          </form>
+        </section>
+
+        <section class="customer-detail-section hidden" data-customer-panel="contractor"><div class="section-heading-row"><div><h4>Contractor / WAF</h4><p>Validity menentukan status otomatis: Active / Expiring Soon / Expired.</p></div><button type="button" class="workspace-primary-btn" data-association-add="contractor_waf">+ Add Contractor / WAF</button></div><div class="workspace-table-wrap"><table class="workspace-table"><thead><tr><th>Name</th><th>Access</th><th>Validity</th><th>Status</th><th>Action</th></tr></thead><tbody id="customerContractorBody"></tbody></table></div></section>
+        <section class="customer-detail-section hidden" data-customer-panel="visitor"><div class="section-heading-row"><div><h4>Visitor / AVE</h4><p>Validity menentukan status otomatis: Active / Expiring Soon / Expired.</p></div><button type="button" class="workspace-primary-btn" data-association-add="visitor_ave">+ Add Visitor / AVE</button></div><div class="workspace-table-wrap"><table class="workspace-table"><thead><tr><th>Name</th><th>Access</th><th>Validity</th><th>Status</th><th>Action</th></tr></thead><tbody id="customerVisitorBody"></tbody></table></div></section>
+        <form id="associationForm" class="support-editor hidden mt-4"><input type="hidden" id="associationId"><input type="hidden" id="associationType"><div class="support-editor-heading"><div><h5 id="associationFormTitle">Add Association</h5><p>Field mengikuti Support Group. Status dihitung otomatis dari Validity.</p></div><button type="button" id="associationFormClose">×</button></div><div class="support-form-grid"><label><span>Name *</span><input id="associationName" required></label><label><span>NRIC / Passport</span><input id="associationIdentity"></label><label><span>Access Level</span><input id="associationAccess"></label><label><span>Email / Phone</span><input id="associationEmailPhone"></label><label><span>Ref: CAR/ESG etc</span><input id="associationReference"></label><label><span>Notes</span><input id="associationNotes"></label><label><span>Location / Rack</span><select id="associationRack"><option value="">All / Not specified</option></select></label><label><span>Validity</span><input id="associationValidity" type="date"></label></div><div class="support-editor-actions"><button type="button" id="associationCancelBtn" class="workspace-secondary-btn">Cancel</button><button type="submit" class="workspace-primary-btn">Save</button></div></form>
+      </div>
+    </div>
+  </section>
+
+  {% if is_admin %}
+  <div id="supportCsvModal" class="mg-modal hidden" role="dialog" aria-modal="true" aria-labelledby="supportCsvTitle">
+    <div class="mg-modal-card">
+      <div class="mg-modal-head">
+        <div><p class="mg-eyebrow">Support Group</p><h3 id="supportCsvTitle">Import Support Group CSV</h3><p>Import berlaku untuk customer yang sedang dipilih. Site/Floor/Rack opsional, tetapi jika lokasi diisi ketiganya harus cocok dengan lokasi customer.</p></div>
+        <button type="button" id="supportCsvClose" class="mg-icon-btn" aria-label="Close">×</button>
+      </div>
+      <div class="mg-import-note">Header: <strong>name, identity_number, access_level, email_phone, reference_info, notes, site, floor, rack, validity_date, status</strong>. Status menerima Active/Valid atau Expired.</div>
+      <label class="mg-dropzone" for="supportCsvFile">
+        <span class="mg-dropzone-icon">⇧</span><strong>Choose Support Group CSV</strong><span>UTF-8 • maksimum 5 MB</span>
+        <input id="supportCsvFile" type="file" accept=".csv,text/csv" />
+      </label>
+      <div id="supportCsvResult" class="mg-import-result hidden"></div>
+      <div class="mg-modal-actions">
+        <a href="/api/support-groups/import-csv/template/" class="workspace-secondary-btn">Download Template</a>
+        <button type="button" id="supportCsvCancel" class="workspace-secondary-btn">Cancel</button>
+        <button type="button" id="supportCsvUpload" class="workspace-primary-btn">Import Support Group</button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if is_admin %}
+  <div id="customerCsvModal" class="mg-modal hidden" role="dialog" aria-modal="true" aria-labelledby="customerCsvTitle">
+    <div class="mg-modal-card">
+      <div class="mg-modal-head">
+        <div><p class="mg-eyebrow">Bulk Data</p><h3 id="customerCsvTitle">Import Customer CSV</h3><p>Customer dengan nama yang sama akan digabung. Rack ditambahkan ke customer dan email AR yang sama tidak diduplikasi.</p></div>
+        <button type="button" id="customerCsvClose" class="mg-icon-btn" aria-label="Close">×</button>
+      </div>
+      <div class="mg-import-note">CSV dapat berisi <strong>Valid, Active, Expiring Soon, atau Expired</strong>. Status tampilan tetap dihitung otomatis dari Due Date.</div>
+      <label class="mg-dropzone" for="customerCsvFile">
+        <span class="mg-dropzone-icon">⇧</span>
+        <strong>Choose CSV file</strong>
+        <span>UTF-8 • maksimum 5 MB</span>
+        <input id="customerCsvFile" type="file" accept=".csv,text/csv" />
+      </label>
+      <div id="customerCsvResult" class="mg-import-result hidden"></div>
+      <div class="mg-modal-actions">
+        <a href="/api/customers/import-csv/template/" class="workspace-secondary-btn">Download Template</a>
+        <button type="button" id="customerCsvCancel" class="workspace-secondary-btn">Cancel</button>
+        <button type="button" id="customerCsvUpload" class="workspace-primary-btn">Import Data</button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<script>
+window.CUSTOMER_WORKSPACE_IS_ADMIN = {{ is_admin|yesno:"true,false" }};
+window.CUSTOMER_WORKSPACE_CAN_MANAGE_SUPPORT = true;
+</script>

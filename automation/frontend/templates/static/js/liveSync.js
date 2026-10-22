@@ -1,0 +1,7 @@
+export function initLiveSync(){
+  if(document.documentElement.dataset.liveSync==='1')return;document.documentElement.dataset.liveSync='1';
+  let revision=null,busy=false;const INTERVAL=15000;
+  const badge=document.createElement('div');badge.id='mgLiveSyncBadge';badge.className='mg-live-sync-badge';badge.textContent='Live · connecting';document.body.appendChild(badge);
+  async function tick(){if(busy||document.hidden)return;busy=true;try{const r=await fetch('/api/live-state/',{headers:{Accept:'application/json'},cache:'no-store'});if(!r.ok)return;const d=await r.json();badge.textContent=`Live · ${new Date(d.updated_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})}`;if(revision===null){revision=d.revision;return}if(d.counts){const c=document.getElementById('liveCustomerCount'),sg=document.getElementById('liveSupportGroupCount');if(c)c.textContent=d.counts.customers;if(sg)sg.textContent=d.counts.support_groups;}if(d.revision!==revision){revision=d.revision;window.dispatchEvent(new CustomEvent('mailgenix:data-changed',{detail:d}));badge.textContent='Live · data updated';setTimeout(()=>{badge.textContent=`Live · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})}`},2500)}}catch(e){badge.textContent='Live · reconnecting'}finally{busy=false}}
+  tick();setInterval(tick,INTERVAL);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+}

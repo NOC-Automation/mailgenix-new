@@ -1,0 +1,179 @@
+<!-- ===== Tenant List Controls (Tailwind) ===== -->
+<div class="mb-3 flex items-center gap-2">
+  <label for="tenantShowEntries" class="text-sm text-slate-600">Show</label>
+  <select id="tenantShowEntries" class="h-8 rounded border border-slate-300 bg-white px-2 text-sm">
+    <option value="10" selected>10</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+  </select>
+  <label for="tenantShowEntries" class="text-sm text-slate-600">entry</label>
+
+  <div class="ml-auto flex items-center gap-2 min-w-[260px]">
+    <span aria-hidden="true" class="text-slate-500">🔍</span>
+    <input id="tenantSearch" class="h-8 w-full rounded border border-slate-300 px-2 text-sm" placeholder="Search..." />
+  </div>
+
+  {% if is_admin %}
+  <a href="/api/customers/import-csv/template/"
+     class="h-8 inline-flex items-center rounded border border-slate-300 bg-white hover:bg-slate-50
+            text-slate-700 text-sm font-medium px-3 transition">
+    Download CSV Template
+  </a>
+  <button id="importCustomerCsvBtn" class="h-8 inline-flex items-center rounded bg-sky-600 hover:bg-sky-700
+                 text-white text-sm font-medium px-3 transition">
+    Import CSV
+  </button>
+  <button id="addCustomerBtn" class="h-8 inline-flex items-center rounded bg-emerald-600 hover:bg-emerald-700
+                 text-white text-sm font-medium px-3 transition">
+    + Add Customer
+  </button>
+  {% endif %}
+</div>
+
+<!-- ===== Desktop Table (Tailwind) ===== -->
+<div class="hidden md:block overflow-x-auto rounded border border-slate-200">
+  <table class="min-w-full text-sm">
+    <thead class="bg-slate-50 text-slate-700">
+      <tr class="border-b border-slate-200">
+        <th class="px-3 py-2 text-left font-semibold">Site Location</th>
+        <th class="px-3 py-2 text-left font-semibold">Rack Location</th>
+        <th class="px-3 py-2 text-left font-semibold">Customer Name</th>
+        <th class="px-3 py-2 text-left font-semibold">Authorized Person</th>
+        <th class="px-3 py-2 text-left font-semibold">Email</th>
+        <th class="px-3 py-2 text-left font-semibold">Phone</th>
+        <th class="px-3 py-2 text-left font-semibold">Date</th>
+        <th class="px-3 py-2 text-left font-semibold">Validity</th>
+        {% if is_admin %}
+        <th class="px-3 py-2 text-right font-semibold">Action</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody id="tenantTableBody"><!-- rows injected by JS --></tbody>
+  </table>
+</div>
+
+<!-- ===== Mobile Cards (Tailwind) ===== -->
+<div id="tenantCards" class="md:hidden"></div>
+
+<!-- ===== Info & Pagination (Tailwind) ===== -->
+<div class="mt-3 flex items-center justify-between">
+  <div id="tenantTableInfo" class="text-slate-600 text-sm">
+    Showing 0-0 from 0 entry
+  </div>
+  <nav id="tenantPagination"><!-- pagination injected here --></nav>
+</div>
+
+<!-- ===== Toast Container (used by showToast) ===== -->
+<div id="tenantToastWrap" class="pointer-events-none fixed right-3 bottom-3 z-[1055] flex flex-col gap-2"></div>
+
+<!-- ===== Edit / Create Modal (Tailwind) ===== -->
+<div id="tenantEditModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40">
+  <div class="w-[92vw] max-w-[520px] rounded bg-white p-4 shadow">
+    <div class="mb-2 flex items-center justify-between">
+      <h6 id="tenantModalTitle" class="m-0 text-base font-semibold">Edit Tenant</h6>
+      <button class="rounded border border-slate-300 px-2 py-1 text-sm" data-modal-close="tenantEditModal"
+        aria-label="Close">×</button>
+    </div>
+
+    <form id="tenantEditForm" class="space-y-3">
+      <div>
+        <label class="mb-1 block text-sm font-medium">Rack Location</label>
+        <input id="editRackLocation" required class="h-9 w-full rounded border border-slate-300 px-2 text-sm" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">Customer Name</label>
+        <input id="editCustomerName" required class="h-9 w-full rounded border border-slate-300 px-2 text-sm" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">Authorized Person</label>
+        <input id="editAuthorizedPerson" class="h-9 w-full rounded border border-slate-300 px-2 text-sm" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">Email</label>
+        <input id="editEmail" type="email" required class="h-9 w-full rounded border border-slate-300 px-2 text-sm" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">Phone</label>
+        <input id="editPhone" class="h-9 w-full rounded border border-slate-300 px-2 text-sm" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">Date</label>
+        <input id="editDate" type="date" class="h-9 w-full rounded border border-slate-300 px-2 text-sm" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">Validity</label>
+        <select id="editValidity" class="h-9 w-full rounded border border-slate-300 bg-white px-2 text-sm">
+          <option value="">(unset)</option>
+          <option value="Valid">Valid</option>
+          <option value="Expired">Expired</option>
+        </select>
+      </div>
+
+      <div class="mt-4 text-right">
+        <button type="button" class="mr-2 inline-flex h-9 items-center rounded border border-slate-300 px-3 text-sm"
+          data-modal-close="tenantEditModal">
+          Cancel
+        </button>
+        <button id="saveTenantBtn" type="button"
+          class="inline-flex h-9 items-center rounded bg-indigo-600 px-3 text-sm font-medium text-white tranetion hover:bg-indigo-700">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Confirm Modal (for delete/confirm) ===== -->
+<div id="tenantConfirmModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40">
+  <div class="w-[92vw] max-w-[420px] rounded bg-white p-4 shadow">
+    <div class="mb-2 flex items-center justify-between">
+      <h6 class="m-0 text-base font-semibold">Konfirmasi</h6>
+      <button class="rounded border border-slate-300 px-2 py-1 text-sm" data-modal-close="tenantConfirmModal"
+        aria-label="Close">×</button>
+    </div>
+    <div id="tenantConfirmMessage" class="mb-4 text-sm">Yakin?</div>
+    <div class="text-right">
+      <button class="mr-2 inline-flex h-9 items-center rounded border border-slate-300 px-3 text-sm"
+        data-modal-close="tenantConfirmModal">Batal</button>
+      <button id="tenantConfirmYes"
+        class="inline-flex h-9 items-center rounded bg-rose-600 px-3 text-sm font-medium text-white transition hover:bg-rose-700">
+        Hapus
+      </button>
+    </div>
+  </div>
+</div>
+
+{% if is_admin %}
+<!-- ===== Customer CSV Import Modal ===== -->
+<div id="customerCsvModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40">
+  <div class="w-[94vw] max-w-[680px] rounded bg-white p-5 shadow-xl">
+    <div class="mb-3 flex items-center justify-between">
+      <div>
+        <h6 class="m-0 text-base font-semibold">Import Customer & Authorized Person dari CSV</h6>
+        <p class="mt-1 text-xs text-slate-500">Satu baris = satu Authorized Person pada Customer x Site x Floor x Rack. Jumlah Authorized Person bersifat dinamis.</p>
+      </div>
+      <button type="button" id="customerCsvClose" class="rounded border border-slate-300 px-2 py-1 text-sm" aria-label="Close">x</button>
+    </div>
+
+    <div class="rounded border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+      Customer dengan nama yang sama akan digunakan kembali, bukan dibuat duplicate. Rack dan AR yang sudah ada juga akan di-update/reuse sesuai data CSV.
+    </div>
+
+    <div class="mt-4">
+      <label for="customerCsvFile" class="mb-1 block text-sm font-medium">File CSV (UTF-8, maks. 5 MB)</label>
+      <p class="mb-3 text-xs text-slate-500">Format dinamis: satu baris CSV mewakili satu Authorized Person. Ulangi data customer untuk setiap Authorized Person tambahan.</p>
+      <input id="customerCsvFile" type="file" accept=".csv,text/csv"
+             class="block w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm" />
+    </div>
+
+    <div id="customerCsvResult" class="mt-4 hidden max-h-56 overflow-auto rounded border border-slate-200 bg-slate-50 p-3 text-sm"></div>
+
+    <div class="mt-4 flex items-center justify-end gap-2">
+      <a href="/api/customers/import-csv/template/" class="inline-flex h-9 items-center rounded border border-slate-300 px-3 text-sm">Download Template</a>
+      <button type="button" id="customerCsvCancel" class="inline-flex h-9 items-center rounded border border-slate-300 px-3 text-sm">Cancel</button>
+      <button type="button" id="customerCsvUpload" class="inline-flex h-9 items-center rounded bg-sky-600 px-3 text-sm font-medium text-white hover:bg-sky-700">Upload & Import</button>
+    </div>
+  </div>
+</div>
+{% endif %}

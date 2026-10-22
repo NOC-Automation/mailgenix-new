@@ -1,0 +1,95 @@
+<div id="sequenceApp" class="seq-page" data-username="{{ user.username|escape }}" data-admin="{{ is_admin|yesno:'1,0' }}">
+  <form class="hidden">{% csrf_token %}</form>
+  <div class="seq-page-head">
+    <div><h1>Sequence Management</h1><p>Kelola dan pantau sequence number untuk berbagai aktivitas.</p></div>
+    {% if is_admin %}<button id="seqExportBtn" class="seq-btn" type="button">Generate Report (Excel)</button>{% endif %}
+    <button id="seqOpenDrawer" class="seq-btn seq-btn-primary" type="button">+ Add Sequence</button>
+  </div>
+
+  <div class="seq-summary seq-kpi-grid" id="seqSummary">
+    <article class="seq-kpi seq-kpi-total"><span>Total This Month</span><strong data-kpi="total">0</strong><small>All Sequence</small></article>
+    <article class="seq-kpi"><span>EQM</span><strong data-kpi="EQM">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>ESG</span><strong data-kpi="ESG">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>WAF</span><strong data-kpi="WAF">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>AVE</span><strong data-kpi="AVE">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>RTA</span><strong data-kpi="RTA">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>SFR</span><strong data-kpi="SFR">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>DAC</span><strong data-kpi="DAC">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>SAC</span><strong data-kpi="SAC">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>POC</span><strong data-kpi="POC">0</strong><small>This Month</small></article>
+    <article class="seq-kpi"><span>Sequence Lainnya</span><strong data-kpi="other">0</strong><small>This Month</small></article>
+  </div>
+
+  <section class="seq-card">
+    <div class="seq-filter-grid">
+      <label class="seq-search"><span>Search</span><input id="seqSearch" type="search" placeholder="Search sequence number, customer, ticket..."></label>
+      <label><span>Type</span><select id="seqFilterType"><option value="">All</option><option>EQM</option><option>ESG</option><option>WAF</option><option>AVE</option><option>RTA</option><option>SFR</option><option>DAC</option><option>SAC</option><option>POC</option></select></label>
+      <label><span>Activity</span><select id="seqFilterActivity"><option value="">All</option><option>IN</option><option>OUT</option><option>ESG</option><option>WAF</option><option>AVE</option><option>RTA</option><option>SFR</option><option>DAC</option><option>SAC</option><option>POC</option></select></label>
+      <label><span>Site</span><select id="seqFilterSite"><option value="">All</option>{% for site in site_locations %}<option value="{{ site.name }}">{{ site.name }}</option>{% endfor %}</select></label>
+      <label><span>Status</span><select id="seqFilterStatus"><option value="">All</option><option>Active</option><option>Void</option></select></label>
+      <label><span>Document Status</span><select id="seqFilterDocument"><option value="">All</option><option>Linked</option><option>Printed</option><option>Tenant List</option><option>QR Already Sent &amp; Tenant List</option></select></label>
+      <label><span>Month</span><select id="seqFilterMonth"><option value="">All</option><option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select></label>
+      <label><span>Year</span><input id="seqFilterYear" type="number" min="2000" max="2100" placeholder="YYYY"></label>
+      <div class="seq-filter-actions"><button id="seqResetFilters" class="seq-btn" type="button">Reset Filter</button><button id="seqOpenDrawer2" class="seq-btn seq-btn-primary" type="button">+ Add Sequence</button></div>
+    </div>
+
+    <div class="seq-table-wrap">
+      <table class="seq-table">
+        <thead><tr><th>No</th><th>Sequence Number</th><th>Type</th><th>Activity</th><th>Customer Name</th><th>Site</th><th>Ticket Number</th><th>Document Status</th><th>EQM Saved</th><th>Operational Date</th><th>Approved By</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="seqTableBody"><tr><td colspan="13" class="seq-empty">Loading sequence data...</td></tr></tbody>
+      </table>
+    </div>
+    <div class="seq-table-foot"><span id="seqTableInfo">Showing 0 entries</span><div id="seqPagination" class="seq-pagination"></div></div>
+  </section>
+
+  <div class="seq-info-grid">
+    <section class="seq-info-card"><h3>Sequence Rule</h3><ul><li>Format: [TYPE]/[SITE]-[NUMBER]/[MONTH_ROMAN]/[YEAR].</li><li>JKT2 = 2, JKT3 = 3.</li><li>Counter terpisah berdasarkan Type + Site + Month + Year.</li><li>Counter reset ke 001 setiap bulan.</li><li>Nomor yang sudah diterbitkan tidak dapat diubah atau digunakan kembali.</li><li>Jika Type/Site salah, VOID sequence lama lalu buat sequence baru.</li></ul></section>
+    <section class="seq-info-card"><h3>Keterangan Status</h3><div class="seq-legend"><span class="seq-badge active">Active</span><p>Sequence aktif dan dapat digunakan.</p><span class="seq-badge void">Void</span><p>Sequence dibatalkan / tidak berlaku.</p><span class="seq-badge printed">Printed</span><p>Dokumen sudah dicetak / digunakan.</p><span class="seq-badge qr">QR Already Sent &amp; Tenant List</span><p>QR sudah dikirim dan sudah masuk Tenant List.</p><span class="seq-badge tenant">Tenant List</span><p>Sudah masuk Tenant List.</p><span class="seq-badge linked">Linked</span><p>Sequence terhubung ke aktivitas terkait.</p></div></section>
+  </div>
+
+  <div id="seqDrawerBackdrop" class="seq-drawer-backdrop" hidden></div>
+  <aside id="seqDrawer" class="seq-drawer" aria-hidden="true" aria-label="Add Sequence">
+    <div class="seq-drawer-head"><div><h2 id="seqDrawerTitle">Add Sequence</h2><p>Lengkapi informasi untuk membuat sequence baru.</p></div><button id="seqCloseDrawer" type="button" class="seq-icon-btn">×</button></div>
+    <form id="seqForm" class="seq-form">
+      <input id="seqEditId" type="hidden">
+      <div class="seq-form-grid">
+        <label><span>Sequence Type *</span><select id="seqType" required><option value="">Select Type</option><option>EQM</option><option>ESG</option><option>WAF</option><option>AVE</option><option>RTA</option><option>SFR</option><option>DAC</option><option>SAC</option><option>POC</option></select></label>
+        <label><span>Activity *</span><select id="seqActivity" required><option value="">Select Activity</option></select></label>
+        <label><span>Site *</span><select id="seqSite" required><option value="">Select Site</option>{% for site in site_locations %}<option value="{{ site.id }}" data-site-name="{{ site.name }}">{{ site.name }}</option>{% endfor %}</select></label>
+        <label><span>Customer *</span><div class="seq-combobox"><input id="seqCustomerSearch" type="search" placeholder="Search customer..." autocomplete="off" required><input id="seqCustomerId" type="hidden"><div id="seqCustomerResults" class="seq-combo-results" hidden></div></div></label>
+        <label class="seq-span-2"><span>Ticket Number</span><input id="seqTicket" type="text" maxlength="120" placeholder="CAR-NX-..."></label>
+        <label><span>Document Status *</span><select id="seqDocumentStatus" required><option>Linked</option><option>Printed</option><option>Tenant List</option><option>QR Already Sent &amp; Tenant List</option></select></label>
+        <fieldset id="seqEqmSavedWrap"><legend>EQM Saved</legend><label class="seq-radio"><input type="radio" name="seqEqmSaved" value="true"> Yes</label><label class="seq-radio"><input type="radio" name="seqEqmSaved" value="false"> No</label></fieldset>
+        <label><span>Operational Date *</span><input id="seqOperationalDate" type="date" required></label>
+        <label><span>Approved By</span><input id="seqApprovedBy" type="text" value="{{ user.username|escape }} (You)" readonly><small>Otomatis dari akun yang login.</small></label>
+        <label class="seq-span-2"><span>Remarks</span><textarea id="seqRemarks" maxlength="255" rows="4" placeholder="Masukkan catatan (opsional)..."></textarea></label>
+      </div>
+      <div class="seq-preview"><span>Sequence Preview</span><strong id="seqPreviewText">—</strong><small id="seqPreviewNote">Pilih Type, Site, dan Operational Date.</small></div>
+      <div id="seqImmutableNote" class="seq-notice">ⓘ Nomor sequence tidak dapat diubah setelah dibuat. Pastikan data yang diinput sudah benar.</div>
+      <div class="seq-form-actions"><button id="seqCancel" type="button" class="seq-btn">Cancel</button><button id="seqSubmit" type="submit" class="seq-btn seq-btn-primary">Create Sequence</button></div>
+      <div id="seqFormMessage" class="seq-form-message" hidden></div>
+    </form>
+  </aside>
+
+  <div id="seqAuditModal" class="seq-modal" hidden><div class="seq-modal-card"><div class="seq-drawer-head"><div><h2>Sequence Audit Log</h2><p id="seqAuditTitle"></p></div><button id="seqAuditClose" type="button" class="seq-icon-btn">×</button></div><div id="seqAuditBody" class="seq-audit-body"></div></div></div>
+</div>
+
+{% if is_admin %}
+<div id="seqReportModal" class="seq-audit-modal" hidden>
+  <div class="seq-audit-card">
+    <div class="seq-drawer-head"><div><h2>Generate Sequence Report</h2><p>Admin only · Excel (.xlsx)</p></div><button id="seqReportClose" type="button" class="seq-icon-btn">×</button></div>
+    <form id="seqReportForm" class="seq-form" style="padding:18px">
+      <label><span>Period</span><select name="period"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option><option value="custom">Custom Date Range</option></select></label>
+      <label><span>Date</span><input name="date" type="date"></label>
+      <label><span>Start</span><input name="start" type="date"></label>
+      <label><span>End</span><input name="end" type="date"></label>
+      <label><span>Month</span><input name="month" type="number" min="1" max="12" value="{% now 'n' %}"></label>
+      <label><span>Year</span><input name="year" type="number" min="2000" max="2100" value="{% now 'Y' %}"></label>
+      <label><span>Site</span><select name="site"><option value="">All Sites</option><option>JKT2</option><option>JKT3</option></select></label>
+      <label><span>Sequence Type</span><select name="type"><option value="">All Types</option><option>EQM</option><option>ESG</option><option>WAF</option><option>AVE</option><option>RTA</option><option>SFR</option><option>DAC</option><option>SAC</option><option>POC</option></select></label>
+      <label><span>Document Status</span><select name="document_status"><option value="">All</option><option>Linked</option><option>Printed</option><option>Tenant List</option><option>QR Already Sent &amp; Tenant List</option></select></label>
+      <div class="seq-drawer-actions"><button id="seqReportCancel" type="button" class="seq-btn">Cancel</button><button type="submit" class="seq-btn seq-btn-primary">Generate Excel</button></div>
+    </form>
+  </div>
+</div>
+{% endif %}

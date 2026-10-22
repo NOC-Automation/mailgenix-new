@@ -1,0 +1,116 @@
+# =========================================
+# Python cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+
+# =========================================
+# Virtual environments
+venv/
+.env/
+*.env
+*.env.local
+
+# =========================================
+# Django specific
+db.sqlite3
+automation_db
+media/
+staticfiles/
+
+# =========================================
+# Logs & temp files
+*.log
+*.pot
+*.pyc
+*.swp
+
+# =========================================
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# =========================================
+# Backup & build artifacts
+*.bak
+*.tmp
+*.orig
+
+# =========================================
+# Scripts or configs (optional)
+setup_github.sh
+setup_groups_users.py
+
+# =========================================
+# Data
+*.csv
+
+# =========================================
+# Node
+node_modules/
+
+# =========================================
+# Backup
+*.sql
+
+# Local development
+*.sqlite3
+automation/.env.local
+automation/.venv/
+
+# Local virtual environments
+sans/
+.venv/
+
+# Keep the documented CSV import template
+!customer_import_template.csv
+
+
+# Environment 
+.env 
+.env.* 
+!.env.example 
+!.env.local.example
+
+# Database local 
+db.sqlite3 
+*.sqlite3
+
+# Python virtual environments 
+.venv/ 
+venv/ 
+env/
+
+# Python cache 
+_pycache_/ 
+*.py[cod] 
+*$py.class
+
+# Django 
+*.log 
+staticfiles/ 
+media/ 
+
+# IDE 
+.vscode/ 
+.idea/ 
+
+# OS 
+.DS_Store 
+Thumbs.db 
+
+# Test/cache 
+.pytest_cache/ 
+.mypy_cache/ 
+.coverage htmlcov/ 
+
+# Python packaging 
+dist/ 
+build/ 
+*.egg-info/
+# Runtime uploaded Remote Hands files
+automation/remote_hands/

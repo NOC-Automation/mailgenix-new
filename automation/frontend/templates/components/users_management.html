@@ -1,0 +1,126 @@
+<div id="users-app" class="space-y-6">
+
+  <!-- HEADER + ADD USER BUTTON -->
+  <div class="mb-3 flex items-center gap-2">
+    <label for="userShowEntries" class="text-sm text-slate-600">Show</label>
+    <select id="userShowEntries" class="h-8 rounded border border-slate-300 bg-white px-2 text-sm">
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <label for="userShowEntries" class="text-sm text-slate-600">entry</label>
+
+    <div class="ml-auto flex items-center gap-2 min-w-[260px]">
+      <span aria-hidden="true" class="text-slate-500">🔍</span>
+      <input id="userSearch"
+             class="h-8 w-full rounded border border-slate-300 px-2 text-sm"
+             placeholder="Search..." />
+    </div>
+
+    <button type="button"
+            id="btn-add-user"
+            class="h-8 inline-flex items-center rounded bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-3 transition">
+      + Add User
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50 text-xs font-semibold uppercase text-gray-600">
+          <tr>
+            <th class="px-4 py-3 text-left">ID</th>
+            <th class="px-4 py-3 text-left">Username</th>
+            <th class="px-4 py-3 text-left">Role</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-left">Last Login</th>
+            <th class="px-4 py-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody" class="divide-y divide-gray-200"></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- FOOTER: Summary + Pagination -->
+  <div class="flex items-center justify-between border-t border-gray-200 px-4 py-3 bg-white rounded-b-lg">
+    <div id="users-summary" class="text-sm text-gray-600">
+      Showing 0 to 0 of 0 entries
+    </div>
+    <div id="users-pagination" class="flex items-center gap-2"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="user-modal"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="modal-title"
+       class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+
+    <div class="w-full max-w-lg rounded-lg bg-white shadow-lg">
+      <div class="border-b px-4 py-3">
+        <h2 id="modal-title" class="text-lg font-semibold text-gray-800">Add User</h2>
+      </div>
+
+      <div class="px-4 py-5">
+        <form id="user-form" class="space-y-4">
+          <input type="hidden" id="u-id">
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">
+              Username <span class="text-rose-600">*</span>
+            </label>
+            <input id="u-username"
+                   type="text"
+                   autocomplete="username"
+                   class="h-10 w-full rounded border border-slate-300 bg-white px-3 text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">
+              Password <span class="text-rose-600">*</span>
+            </label>
+            <input id="u-password"
+                   type="password"
+                   autocomplete="new-password"
+                   class="h-10 w-full rounded border border-slate-300 bg-white px-3 text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">
+              Role <span class="text-rose-600">*</span>
+            </label>
+            <select id="u-role" class="h-10 w-full rounded border border-slate-300 bg-white px-3 text-sm">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input id="u-active"
+                   type="checkbox"
+                   class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
+                   checked>
+            <label class="text-sm text-gray-700">Active</label>
+          </div>
+
+          {% csrf_token %}
+
+          <div class="flex justify-end gap-3 pt-4">
+            <button type="button"
+                    id="modal-cancel"
+                    class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit"
+                    class="rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

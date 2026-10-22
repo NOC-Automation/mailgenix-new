@@ -1,0 +1,75 @@
+{% load static %}
+<div class="mg195-mailing" id="mg195Mailing" data-version="1.9.7">
+  <div class="hidden">{% csrf_token %}</div>
+  <section class="mg195-step-card">
+    <div class="mg195-step-head"><span class="mg195-step-no">1</span><div><h2>Notification Template</h2><p>Select a category, type, and variant. The preview and Notification Details will follow this selection automatically.</p></div></div>
+    <div class="mg195-template-layout">
+      <div>
+        <label class="mg195-label" for="templateSearch">Search Template</label>
+        <input id="templateSearch" class="mg195-field" placeholder="Search notification template...">
+        <div class="mg195-label mt-4">Category</div>
+        <div id="templateCategories" class="mg195-category-grid">
+          {% for value, title, desc in notification_gallery %}
+          <button type="button" class="mg195-category-card" data-category="{{ value }}" data-search="{{ title|lower }} {{ desc|lower }}"><strong>{{ title }}</strong><small>{{ desc }}</small></button>
+          {% endfor %}
+        </div>
+      </div>
+      <aside class="mg195-selection-panel">
+        <div class="mg195-selected-row"><span>Selected Template</span><strong id="selectedTemplateLabel">Not selected</strong></div>
+        <div id="subcategoryWrap" class="hidden mt-4"><label class="mg195-label" for="templateSubcategory">Type / Subcategory</label><select id="templateSubcategory" class="mg195-field"></select></div>
+        <div id="variantWrap" class="hidden mt-4"><label class="mg195-label" for="templateVariant">Variant</label><select id="templateVariant" class="mg195-field"></select></div>
+        <div id="outageTypeWrap" class="hidden mt-4"><label class="mg195-label" for="outageUpdateType">Outage Update Type</label><select id="outageUpdateType" class="mg195-field"><option>Occurrence</option><option>Status Update</option><option>Recovery</option><option>Root Cause</option></select></div>
+        <button id="previewTemplateBtn" type="button" class="mg195-primary mt-5" disabled>Preview Template</button>
+      </aside>
+    </div>
+  </section>
+
+  <section class="mg195-step-card">
+    <div class="mg195-step-head"><span class="mg195-step-no">2</span><div><h2>Notification Details</h2><p>Fields change automatically according to the template selected in Step 1.</p></div><span id="selectedTemplatePill" class="mg195-pill">No template selected</span></div>
+    <div id="notificationDetailsEmpty" class="mg195-empty">Choose a notification template in Step 1 to load the required fields.</div>
+    <div id="notificationDetails" class="hidden">
+      <div class="mg195-form-grid">
+        <div><label class="mg195-label">Ticket Number *</label><input id="ticketNumber" class="mg195-field" placeholder="DFREQ / INC ticket number"></div>
+        <div><label class="mg195-label">Site *</label><select id="notificationSite" class="mg195-field"><option value="">Choose Site</option><option>JKT2</option><option>JKT3</option></select></div>
+        <div id="notificationDateWrap"><label class="mg195-label">Date & Time</label><input id="notificationDate" type="datetime-local" step="1" class="mg195-field"></div>
+        <div id="monthYearWrap" class="hidden"><label class="mg195-label">Month & Year</label><input id="monthYear" class="mg195-field" placeholder="August 2026"></div>
+        <div id="descriptionWrap" class="mg195-span-2"><label class="mg195-label">Description</label><textarea id="description" class="mg195-field mg195-textarea" rows="2"></textarea></div>
+        <div id="occurringWrap" class="hidden"><label class="mg195-label">Fault Occurring Time *</label><input id="faultOccurringTime" type="datetime-local" step="1" class="mg195-field"></div>
+        <div id="recoveringWrap" class="hidden"><label class="mg195-label">Fault Recovering Time *</label><input id="faultRecoveringTime" type="datetime-local" step="1" class="mg195-field"></div>
+        <div id="serviceImpactWrap" class="hidden mg195-span-2"><label class="mg195-label">Service Impact</label><input id="serviceImpact" class="mg195-field mg195-readonly" value="Impact/No Impact to IT Load and Environment" readonly></div>
+        <div id="currentActionWrap" class="hidden mg195-span-2"><label class="mg195-label">Current Action</label><textarea id="currentAction" class="mg195-field mg195-textarea" rows="2"></textarea></div>
+        <div id="rootCauseWrap" class="hidden mg195-span-2"><label class="mg195-label">Root Cause</label><textarea id="rootCause" class="mg195-field mg195-textarea" rows="2" placeholder="Under Investigation"></textarea></div>
+        <div id="genericFields" class="mg195-span-2"></div>
+        <div class="mg195-span-2"><label class="mg195-label">Additional Information <span class="mg195-optional">Optional</span></label><textarea id="additionalInformation" class="mg195-field mg195-textarea" rows="3" placeholder="Optional additional information. The standard closing message is always added automatically."></textarea><p class="mg195-help">If left blank, only the standard contact message will appear.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mg195-step-card">
+    <div class="mg195-step-head"><span class="mg195-step-no">3</span><div><h2>Recipient Scope</h2><p>Select how MailGenix should resolve recipients from tenant data.</p></div></div>
+    <div class="mg-recipient-scope-picker" role="radiogroup">
+      <label class="mg-scope-option active" data-scope-card="site-floor"><input type="radio" name="recipient_scope" value="site-floor" checked><span><strong>Site / Floor</strong><small>Matching customers → BCC</small></span></label>
+      <label class="mg-scope-option" data-scope-card="specific"><input type="radio" name="recipient_scope" value="specific"><span><strong>Specific Customer</strong><small>AR → TO, Additional ML → CC</small></span></label>
+      <label class="mg-scope-option" data-scope-card="mailing-group"><input type="radio" name="recipient_scope" value="mailing-group"><span><strong>Mailing Group</strong><small>Dynamic group → BCC</small></span></label>
+    </div>
+    <div class="mg195-recipient-grid mt-5">
+      <div id="locationScopeFields"><label class="mg195-label">Customer Site</label><select id="customerSite" class="mg195-field"><option value="">Choose Customer Site</option>{% for site in site_locations %}<option value="{{ site.id }}">{{ site.name }}</option>{% endfor %}</select><label class="mg195-label mt-4">Floor Level</label><select id="floorLevel" class="mg195-field"><option value="">Choose Floor Level</option>{% for fl in floor_levels %}<option value="{{ fl.id }}" data-site="{{ fl.site_location.id }}">{{ fl.name }}</option>{% endfor %}</select></div>
+      <div id="specificCustomerFields" class="hidden"><label class="mg195-label">Customer</label><input id="customerSearch" class="mg195-field mb-2" placeholder="Search customer..."><select id="customerName" class="mg195-field"><option value="">Choose Customer Name</option>{% for c in customers_with_racks %}<option value="{{ c.id }}" data-customer-name="{{ c.name_customer }}" data-location-pairs="{% for rk in c.racks.all %}{{ rk.floor_level.site_location.id }}:{{ rk.floor_level.id }}{% if not forloop.last %},{% endif %}{% endfor %}">{{ c.name_customer }}</option>{% endfor %}</select></div>
+      <div id="mailingGroupFields" class="hidden"><label class="mg195-label">Mailing Group</label><select id="mailingGrouping" class="mg195-field"><option value="">Choose Mailing Group</option>{% for group in mailing_groupings %}<option value="{{ group.id }}">{{ group.name }} — {{ group.site.name }}</option>{% endfor %}</select><div id="mailingGroupSummary" class="mg-group-summary hidden mt-3"><div class="mg-group-summary-head"><div><span id="groupSummaryName">-</span><small id="groupSummaryScope">-</small></div><span class="mg-status-pill">Dynamic</span></div><div class="mg-group-summary-grid"><div><span>Matched Customers</span><strong id="groupMatchedCustomers">0</strong></div><div><span>Active AR</span><strong id="groupActiveAr">0</strong></div><div><span>Additional ML</span><strong id="groupAdditionalMl">0</strong></div><div><span>Unique BCC</span><strong id="groupUniqueBcc">0</strong></div></div></div></div>
+    </div>
+  </section>
+
+  <section class="mg195-step-card">
+    <div class="mg195-step-head"><span class="mg195-step-no">4</span><div><h2>Resolved Recipients</h2><p>Read-only, selectable/copyable, and vertically resizable. Deduplication priority: TO &gt; CC &gt; BCC.</p></div><span id="recipientStatus" class="mg195-pill">Waiting</span></div>
+    <div class="mg195-recipient-grid"><div><label class="mg195-label">TO <span id="toCount">0</span></label><textarea id="resolvedTo" rows="4" readonly class="mg-recipient-output"></textarea></div><div><label class="mg195-label">CC <span id="ccCount">0</span></label><textarea id="resolvedCc" rows="4" readonly class="mg-recipient-output"></textarea></div><div><label class="mg195-label">BCC <span id="bccCount">0</span></label><textarea id="resolvedBcc" rows="4" readonly class="mg-recipient-output"></textarea></div></div>
+  </section>
+
+  <section class="mg195-step-card">
+    <div class="mg195-step-head"><span class="mg195-step-no">5</span><div><h2>Final Preview</h2><p>Review subject, recipients, and HTML email before generating the Outlook draft.</p></div></div>
+    <label class="mg195-label">Subject Preview</label><textarea id="subjectPreview" rows="2" readonly class="mg195-field mg195-readonly"></textarea>
+    <div class="mg195-preview-shell mt-4"><iframe id="finalPreviewFrame" title="Email preview"></iframe></div>
+    <div class="mg195-actions"><span id="previewStatus" class="mg195-help">Complete the template and required fields to preview.</span><button id="generateDraftBtn" class="mg195-primary" type="button" disabled>Generate Draft</button></div>
+  </section>
+
+  <div id="notificationPreviewModal" class="fixed inset-0 z-[1100] hidden items-center justify-center bg-black/50 p-4"><div class="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"><div class="flex items-center justify-between border-b px-5 py-4"><div><h3 id="notificationPreviewTitle" class="font-semibold">Template Preview</h3><p class="text-xs text-slate-500">Preview follows the selected category, variant, and update type.</p></div><button id="notificationPreviewClose" type="button" class="text-2xl">×</button></div><div class="min-h-0 flex-1 bg-slate-100 p-4"><iframe id="notificationPreviewFrame" class="h-[72vh] w-full rounded-lg bg-white"></iframe></div></div></div>
+</div>

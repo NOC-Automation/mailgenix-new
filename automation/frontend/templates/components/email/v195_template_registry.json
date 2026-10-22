@@ -1,0 +1,194 @@
+[
+  {
+    "category": "outage",
+    "subcategory": "outage-report",
+    "variant": "general",
+    "file": "outage__outage-report__general.html"
+  },
+  {
+    "category": "outage",
+    "subcategory": "outage-report",
+    "variant": "a100",
+    "file": "outage__outage-report__a100.html"
+  },
+  {
+    "category": "outage",
+    "subcategory": "outage-report",
+    "variant": "bond",
+    "file": "outage__outage-report__bond.html"
+  },
+  {
+    "category": "preventive-maintenance",
+    "subcategory": "preventive-maintenance",
+    "variant": "general",
+    "file": "preventive-maintenance__preventive-maintenance__general.html"
+  },
+  {
+    "category": "preventive-maintenance",
+    "subcategory": "preventive-maintenance",
+    "variant": "a100",
+    "file": "preventive-maintenance__preventive-maintenance__a100.html"
+  },
+  {
+    "category": "preventive-maintenance",
+    "subcategory": "preventive-maintenance",
+    "variant": "bond",
+    "file": "preventive-maintenance__preventive-maintenance__bond.html"
+  },
+  {
+    "category": "response-alarm",
+    "subcategory": "response-alarm",
+    "variant": "general",
+    "file": "response-alarm__response-alarm__general.html"
+  },
+  {
+    "category": "response-alarm",
+    "subcategory": "response-alarm",
+    "variant": "a100",
+    "file": "response-alarm__response-alarm__a100.html"
+  },
+  {
+    "category": "general-cleaning",
+    "subcategory": "schedule-general-cleaning",
+    "variant": "general",
+    "file": "general-cleaning__schedule-general-cleaning__general.html"
+  },
+  {
+    "category": "general-cleaning",
+    "subcategory": "schedule-general-cleaning",
+    "variant": "a100",
+    "file": "general-cleaning__schedule-general-cleaning__a100.html"
+  },
+  {
+    "category": "general-cleaning",
+    "subcategory": "schedule-general-cleaning",
+    "variant": "bond",
+    "file": "general-cleaning__schedule-general-cleaning__bond.html"
+  },
+  {
+    "category": "site-access",
+    "subcategory": "site-access-information",
+    "variant": "general",
+    "file": "site-access__site-access-information__general.html"
+  },
+  {
+    "category": "site-access",
+    "subcategory": "site-access-information",
+    "variant": "a100",
+    "file": "site-access__site-access-information__a100.html"
+  },
+  {
+    "category": "site-access",
+    "subcategory": "site-access-information",
+    "variant": "bond",
+    "file": "site-access__site-access-information__bond.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "general",
+    "variant": "general",
+    "file": "sharing-information__general__general.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "general",
+    "variant": "a100",
+    "file": "sharing-information__general__a100.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "general",
+    "variant": "bond",
+    "file": "sharing-information__general__bond.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "bomb",
+    "variant": "general",
+    "file": "sharing-information__bomb__general.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "bomb",
+    "variant": "a100",
+    "file": "sharing-information__bomb__a100.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "bomb",
+    "variant": "bond",
+    "file": "sharing-information__bomb__bond.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "demonstration",
+    "variant": "general",
+    "file": "sharing-information__demonstration__general.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "demonstration",
+    "variant": "a100",
+    "file": "sharing-information__demonstration__a100.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "demonstration",
+    "variant": "bond",
+    "file": "sharing-information__demonstration__bond.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "earthquake",
+    "variant": "general",
+    "file": "sharing-information__earthquake__general.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "earthquake",
+    "variant": "a100",
+    "file": "sharing-information__earthquake__a100.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "earthquake",
+    "variant": "bond",
+    "file": "sharing-information__earthquake__bond.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "fire",
+    "variant": "general",
+    "file": "sharing-information__fire__general.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "fire",
+    "variant": "a100",
+    "file": "sharing-information__fire__a100.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "fire",
+    "variant": "bond",
+    "file": "sharing-information__fire__bond.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "flooding",
+    "variant": "general",
+    "file": "sharing-information__flooding__general.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "flooding",
+    "variant": "a100",
+    "file": "sharing-information__flooding__a100.html"
+  },
+  {
+    "category": "sharing-information",
+    "subcategory": "flooding",
+    "variant": "bond",
+    "file": "sharing-information__flooding__bond.html"
+  }
+]

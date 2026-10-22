@@ -1,0 +1,80 @@
+/* tenantList-spacing.css
+ * Gentle density (comfortable) for table/cards on Tenant List.
+ * Works without changing your HTML/JS. Targets existing IDs/classes.
+ */
+
+/* Base typography & line-height for table body */
+#tenantTableBody td {
+  padding: 10px 12px;           /* comfortable default */
+  line-height: 1.35;            /* improve readability */
+  vertical-align: top;
+  border-top: 1px solid #f1f5f9;/* subtle row separators */
+}
+
+/* Header spacing */
+#tenantTableBody tr:first-child td { border-top: 0; }
+
+/* Make stacked lists inside cells breathe a bit (renderStack wrapper) */
+#tenantTableBody td > .space-y-0.5 > div { margin-top: 4px; }
+#tenantTableBody td > .space-y-0.5 > div:first-child { margin-top: 0; }
+
+/* Column-specific tweaks (optional) */
+/* Email column: allow wrap but keep long strings readable */
+#tenantTableBody td:nth-child(4) { /* email col if order = Rack, Customer, Auth, Email, Phone, Date, Validity, Action */
+  word-break: break-word;
+  hyphens: auto;
+}
+/* Phone column: slightly narrower */
+#tenantTableBody td:nth-child(5) { min-width: 120px; }
+
+/* Controls row spacing (Show / Search / Add) */
+#tenantTableInfo, #tenantPagination { margin-top: 8px; }
+
+/* Cards view (mobile) */
+#tenantCards > div { /* each card */
+  padding: 12px 14px;
+  line-height: 1.4;
+  gap: 6px;
+}
+#tenantCards .divide-y > .text-sm { padding: 6px 0; }
+
+/* ---------- Responsive density ---------- */
+/* Small screens: cozy but not cramped */
+@media (max-width: 640px) {
+  #tenantTableBody td { padding: 8px 10px; line-height: 1.4; }
+  #tenantCards > div { padding: 12px; }
+}
+
+/* Medium screens (≥768px): comfortable */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #tenantTableBody td { padding: 12px 14px; line-height: 1.45; }
+}
+
+/* Large screens (≥1024px): relaxed */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  #tenantTableBody td { padding: 14px 16px; line-height: 1.5; }
+}
+
+/* Extra large (≥1440px): airy */
+@media (min-width: 1440px) {
+  #tenantTableBody td { padding: 16px 18px; line-height: 1.55; }
+  #tenantCards > div { padding: 14px 16px; }
+}
+
+/* Action buttons spacing */
+#tenantTableBody td .flex.items-center.gap-2 { gap: 10px; }
+#tenantTableBody td .px-2.py-1 { padding: 6px 10px; }
+
+/* Zebra stripes for better row scanning (optional) */
+#tenantTableBody tr:nth-child(odd) { background-color: #fcfdff; }
+
+/* Tighten header (outside of tbody; assuming you have <thead>) */
+ table thead th {
+  padding: 10px 12px;
+  white-space: nowrap;
+ }
+
+/* Reduce visual noise on tiny screens: hide Validity label text if needed (keep value) */
+@media (max-width: 480px) {
+  /* Example: turn the Validity header into short label via CSS only if desired */
+}

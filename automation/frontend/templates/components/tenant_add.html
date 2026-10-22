@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add / Edit Tenant — MailGenix{% endblock %}
+{% block sidebar_tabs %}{% include 'components/sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="tenant-profile-page">
+  <div class="tenant-profile-pagehead">
+    <div>
+      <a href="/?tab=tenant" class="mg-back-link">← Tenant List</a>
+      <h1 id="tenantProfileTitle">Add Tenant</h1>
+      <p>Create one customer and manage all locations/racks and Authorized Persons in a single form.</p>
+    </div>
+    <div class="tenant-profile-head-actions">
+      <button type="button" class="workspace-secondary-btn" data-cancel-profile>Cancel</button>
+      <button type="submit" form="tenantProfileForm" class="workspace-primary-btn">Save Tenant</button>
+    </div>
+  </div>
+
+  <form id="tenantProfileForm" class="tenant-profile-form" novalidate>
+    {% csrf_token %}
+
+    <section class="mg-form-section">
+      <div class="mg-form-section-head">
+        <div><span class="mg-section-number">1</span><div><h2>Customer Information</h2><p>Informasi dasar customer. Email contact dikelola pada Authorized Persons.</p></div></div>
+      </div>
+      <div class="mg-form-grid two">
+        <label class="mg-field"><span>Customer Name <b>*</b></span><input id="profileCustomerName" type="text" required placeholder="Customer name" /></label>
+        <label class="mg-field"><span>Office Phone</span><input id="profileOfficePhone" type="text" placeholder="021-1234567" /></label>
+      </div>
+    </section>
+
+    <section class="mg-form-section">
+      <div class="mg-form-section-head">
+        <div><span class="mg-section-number">2</span><div><h2>Locations / Racks</h2><p>Add all site, floor, and rack locations that belong to this customer.</p></div></div>
+        <button type="button" id="addLocationBtn" class="workspace-secondary-btn">+ Add Location / Rack</button>
+      </div>
+      <div class="mg-responsive-table mg-location-editor">
+        <div class="mg-editor-header"><span>No.</span><span>Site</span><span>Floor / Level</span><span>Rack Location</span><span>Action</span></div>
+        <div id="locationsList"></div>
+      </div>
+    </section>
+
+    <section class="mg-form-section">
+      <div class="mg-form-section-head">
+        <div><span class="mg-section-number">3</span><div><h2>Authorized Persons</h2><p>Authorized Person applies to the customer as a whole, not to a specific rack.</p></div></div>
+        <button type="button" id="addAuthorizedBtn" class="workspace-secondary-btn">+ Add Authorized Person</button>
+      </div>
+      <div class="mg-responsive-table mg-ar-editor">
+        <div class="mg-editor-header"><span>No.</span><span>Name</span><span>Email</span><span>Phone</span><span>Validity Date</span><span>Status</span><span>Action</span></div>
+        <div id="authorizedList"></div>
+      </div>
+      <div class="mg-info-callout">
+        <strong>Status is automatic.</strong> Active = more than 30 days remaining, Expiring Soon = 0–30 days, Expired = validity date has passed. Operator does not need to manually change a validity status.
+      </div>
+    </section>
+
+    <section class="mg-form-section">
+      <div class="mg-form-section-head">
+        <div><span class="mg-section-number">4</span><div><h2>Additional Mailing Lists</h2><p>Alamat mailing list tambahan milik customer. Specific Customer → CC. Site/Floor atau Mailing Group bulk → BCC.</p></div></div>
+        <button type="button" id="addAdditionalMailingBtn" class="workspace-secondary-btn">+ Add Mailing List</button>
+      </div>
+      <div class="mg-responsive-table mg-additional-mailing-editor">
+        <div class="mg-editor-header"><span>No.</span><span>Mailing List Email</span><span>Action</span></div>
+        <div id="additionalMailingList"></div>
+      </div>
+      <div class="mg-info-callout"><strong>Recipient rule:</strong> pada Specific Customer, email di section ini masuk CC. Pada Site/Floor atau Dynamic Mailing Group, email ini digabung dengan AR aktif ke BCC. Sistem melakukan deduplication dengan prioritas TO &gt; CC &gt; BCC.</div>
+    </section>
+
+    <div class="tenant-profile-footer-actions">
+      <button type="button" class="workspace-secondary-btn" data-cancel-profile>Cancel</button>
+      <button id="saveTenantProfileBtn" type="submit" class="workspace-primary-btn">Save Tenant</button>
+    </div>
+  </form>
+
+  <template id="locationRowTemplate">
+    <div class="mg-editor-row location-row">
+      <span class="row-number">1</span>
+      <label class="mg-field compact"><span class="mobile-label">Site</span><select class="location-site" required><option value="">Choose Site</option>{% for s in site_locations %}<option value="{{ s.name }}" data-site-id="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select></label>
+      <label class="mg-field compact"><span class="mobile-label">Floor / Level</span><select class="location-floor" required><option value="">Choose Floor</option>{% for f in floor_levels %}<option value="{{ f.id }}" data-site-name="{{ f.site_location.name }}">{{ f.name }}</option>{% endfor %}</select></label>
+      <label class="mg-field compact"><span class="mobile-label">Rack Location</span><input class="location-rack" type="text" required placeholder="Rack A1" /></label>
+      <button type="button" class="mg-remove-btn remove-location" title="Remove location">×</button>
+    </div>
+  </template>
+
+  <template id="authorizedRowTemplate">
+    <div class="mg-editor-row ar-profile-row">
+      <span class="row-number">1</span>
+      <label class="mg-field compact"><span class="mobile-label">Name</span><input class="profile-ar-name" type="text" placeholder="Authorized name" /></label>
+      <label class="mg-field compact"><span class="mobile-label">Email</span><input class="profile-ar-email" type="email" required placeholder="name@company.com" /></label>
+      <label class="mg-field compact"><span class="mobile-label">Phone</span><input class="profile-ar-phone" type="text" placeholder="0812..." /></label>
+      <label class="mg-field compact"><span class="mobile-label">Validity Date</span><input class="profile-ar-date" type="date" /></label>
+      <span class="profile-ar-status customer-status-badge status-active">Active</span>
+      <button type="button" class="mg-remove-btn remove-ar" title="Remove Authorized Person">×</button>
+    </div>
+  </template>
+
+  <template id="additionalMailingRowTemplate">
+    <div class="mg-editor-row additional-mailing-row">
+      <span class="row-number">1</span>
+      <label class="mg-field compact"><span class="mobile-label">Mailing List Email</span><input class="additional-mailing-email" type="email" required placeholder="ops@customer.com" /></label>
+      <button type="button" class="mg-remove-btn remove-additional-mailing" title="Remove mailing list">×</button>
+    </div>
+  </template>
+
+  <div id="tenantToastWrap" class="pointer-events-none fixed right-3 bottom-3 z-[1055] flex flex-col gap-2"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="module" src="{% static 'js/tenantProfileForm.js' %}?v=1.9.0"></script>
+{% endblock %}

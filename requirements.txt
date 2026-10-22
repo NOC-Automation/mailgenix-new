@@ -1,0 +1,2 @@
+# Convenience file for developers working from the repository root.
+-r automation/requirements.txt

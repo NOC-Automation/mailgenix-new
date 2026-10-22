@@ -1,0 +1,33 @@
+<div class="mg-v197-page" id="remoteHandsApp">
+  <div class="mg-v197-head">
+    <div><p class="mg-eyebrow">Report</p><h2>Remote Hands</h2><p>Create Service Report with NTT corporate format. PDF and Word use the same report data.</p></div>
+    <div class="mg-report-selector"><label>Report Page</label><select disabled><option>Remote Hands</option></select></div>
+  </div>
+  <section class="mg-card">
+    <form id="rhForm" enctype="multipart/form-data" class="mg-report-form">{% csrf_token %}
+      <div class="mg-section-title"><h3>Inquiry Information</h3></div>
+      <div class="mg-report-grid">
+        <label>Type of Report<select name="report_type"><option>Remote Hands Report</option><option>Custom Remote Hands Report</option></select></label>
+        <label>Ticket Number *<input name="ticket_number" required></label>
+        <label>Site *<select name="site" required><option>JKT2</option><option>JKT3</option></select></label>
+        <label>Start Date & Time *<input type="datetime-local" step="1" name="start_datetime" required></label>
+        <label>Finish Date & Time *<input type="datetime-local" step="1" name="finish_datetime" required></label>
+        <label>Additional Date & Time<input type="datetime-local" step="1" name="additional_datetime"></label>
+        <label>Engineer<input name="engineer" value="{{ request.user.username }}"></label>
+        <label>Request By<input name="request_by"></label>
+        <label>Shift Leader<input name="shift_leader"></label>
+      </div>
+      <div class="mg-section-title"><h3>Customer Information</h3></div>
+      <div class="mg-report-grid two">
+        <label>Customer *<select name="customer_id" required><option value="">Choose Customer</option>{% for c in customers_with_racks %}<option value="{{ c.id }}">{{ c.name_customer }}</option>{% endfor %}</select></label>
+        <label>Rack Number<input name="rack_number"></label>
+      </div>
+      <div class="mg-section-title"><h3>Task Detail</h3></div><textarea name="task_detail" rows="6" required placeholder="Describe the requested task. Multiple lines are supported."></textarea>
+      <div class="mg-section-title"><h3>Result Information</h3></div><textarea name="result_information" rows="5" placeholder="Describe result / action / finding. Multiple lines are supported."></textarea>
+      <div class="mg-section-title"><div><h3>Attachments / Photos</h3><p>Add multiple photos. Each photo can have its own multiline description.</p></div><button id="rhAddPhoto" type="button" class="mg-btn secondary">+ Add Photo</button></div>
+      <div id="rhAttachmentRows" class="mg-attachment-list"></div>
+      <div class="mg-report-footer"><label>Status<select name="status"><option>Draft</option><option>Completed</option></select></label><div class="mg-v197-actions"><button class="mg-btn secondary" type="reset">Reset</button><button class="mg-btn primary" type="submit">Save Remote Hands</button></div></div>
+    </form>
+  </section>
+  <section class="mg-card mt-4"><div class="mg-section-title"><h3>Report History</h3></div><div class="mg-table-wrap"><table class="mg-v197-table"><thead><tr><th>Ticket</th><th>Site</th><th>Customer</th><th>Start</th><th>Engineer</th><th>Status</th><th>Export</th></tr></thead><tbody id="rhHistory"></tbody></table></div></section>
+</div>

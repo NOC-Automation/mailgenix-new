@@ -1,0 +1,34 @@
+name: Deploy Django Docker to EC2
+
+# Safety: AWS production deployment is manual in this staging/Vercel-ready copy.
+# This prevents a GitHub push from modifying the existing live EC2 application.
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ${{ secrets.EC2_PATH }}
+
+            echo "Pull latest code"
+            git pull origin main
+
+            echo "Rebuild only changed services"
+            docker compose build --parallel
+            docker compose up -d --remove-orphans
+
+            echo "Clean up dangling images"
+            docker image prune -f

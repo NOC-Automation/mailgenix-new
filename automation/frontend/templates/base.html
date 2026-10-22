@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}MailGenix{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/tailwind.css' %}?v=1.9.7-hf2" />
+  <link rel="stylesheet" href="{% static 'css/tenantList-spacing.css' %}?v=1.9.7-hf2" />
+  <link rel="stylesheet" href="{% static 'css/mailgenix-enhancements.css' %}?v=1.9.7-hf2" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.9.7-hf2" />
+  <link rel="stylesheet" href="{% static 'css/mailgenix-ui-v2.css' %}?v=1.9.7-hf2" />
+</head>
+<body class="mg-body min-h-screen bg-slate-50 text-slate-900">
+  <a href="#main-content" class="skip-link">Lewati ke konten</a>
+
+  <div class="mg-app-shell">
+    <aside id="mgSidebar" class="mg-sidebar" aria-label="Main navigation">
+      <div class="mg-sidebar-brand">
+        <div class="mg-brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 8 7.5 4 7.5-4M12 12v8" stroke="currentColor" stroke-width="1.7"/></svg>
+        </div>
+        <div class="mg-brand-text"><span>Mail</span><strong>Genix</strong></div>
+        <button id="mgSidebarClose" class="mg-sidebar-close" type="button" aria-label="Tutup menu">×</button>
+      </div>
+      <nav class="mg-sidebar-nav" role="tablist" aria-orientation="vertical">
+        {% block sidebar_tabs %}{% endblock %}
+      </nav>
+      {% if user.is_authenticated %}
+      <div class="mg-sidebar-user">
+        <div class="mg-avatar">{{ user.username|first|upper }}</div>
+        <div class="mg-sidebar-user-copy">
+          <strong>{{ user.get_full_name|default:user.username }}</strong>
+          <span>{% if is_admin %}Administrator{% else %}Operator{% endif %}</span>
+        </div>
+      </div>
+      {% endif %}
+    </aside>
+
+    <div id="mgSidebarBackdrop" class="mg-sidebar-backdrop" aria-hidden="true"></div>
+
+    <div class="mg-main-column">
+      <header class="mg-topbar">
+        <div class="mg-topbar-left">
+          <button id="mgSidebarToggle" type="button" class="mg-menu-toggle" aria-label="Buka menu">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="mg-mobile-brand">Mail<span>Genix</span></div>
+        </div>
+        <div class="mg-topbar-actions">
+          {% if user.is_authenticated %}
+          <div class="userwrap">
+            <button id="ubtn" type="button" class="mg-user-button" aria-haspopup="true" aria-expanded="false">
+              <span class="mg-avatar small">{{ user.username|first|upper }}</span>
+              <span class="mg-user-copy"><strong>{{ user.get_full_name|default:user.username }}</strong><small>{% if is_admin %}Administrator{% else %}Operator{% endif %}</small></span>
+              <svg class="mg-caret" viewBox="0 0 20 20" fill="currentColor"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"/></svg>
+            </button>
+            <div id="udrop" class="user-dropdown" role="menu">
+              <div class="px-3 py-2 text-sm text-slate-700 border-b">{{ user.username }}</div>
+              <form method="post" action="{% url 'logout' %}" class="m-0">{% csrf_token %}
+                <button type="submit" class="block w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">Logout</button>
+              </form>
+            </div>
+          </div>
+          {% else %}
+          <a href="{% url 'login' %}" class="text-sm font-semibold text-blue-600">Sign in</a>
+          {% endif %}
+        </div>
+      </header>
+
+      <main id="main-content" class="mg-main-content">{% block content %}{% endblock %}</main>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const sidebar = document.getElementById('mgSidebar');
+      const backdrop = document.getElementById('mgSidebarBackdrop');
+      const toggle = document.getElementById('mgSidebarToggle');
+      const close = document.getElementById('mgSidebarClose');
+      const setOpen = (open) => {
+        sidebar?.classList.toggle('open', open);
+        backdrop?.classList.toggle('open', open);
+        document.body.classList.toggle('mg-nav-open', open);
+      };
+      toggle?.addEventListener('click', () => setOpen(true));
+      close?.addEventListener('click', () => setOpen(false));
+      backdrop?.addEventListener('click', () => setOpen(false));
+      sidebar?.addEventListener('click', (e) => {
+        if (window.innerWidth < 1024 && e.target.closest('.tab-btn')) setOpen(false);
+      });
+
+      const reportToggle = document.getElementById('mgReportToggle');
+      const reportSubmenu = document.getElementById('mgReportSubmenu');
+      const setReportOpen = (open) => {
+        if (!reportToggle || !reportSubmenu) return;
+        reportToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        reportSubmenu.hidden = !open;
+      };
+      reportToggle?.addEventListener('click', () => setReportOpen(reportToggle.getAttribute('aria-expanded') !== 'true'));
+      reportSubmenu?.addEventListener('click', (e) => {
+        if (e.target.closest('.tab-btn')) setReportOpen(true);
+      });
+      const activeReportChild = document.querySelector('.tab-btn[aria-selected="true"][data-tab="report"], .tab-btn[aria-selected="true"][data-tab="checklist"]');
+      if (activeReportChild) setReportOpen(true);
+
+      document.addEventListener('click', function (e) {
+        const btn = document.getElementById('ubtn');
+        const dd = document.getElementById('udrop');
+        if (!btn || !dd) return;
+        if (btn.contains(e.target)) {
+          dd.classList.toggle('open');
+          btn.setAttribute('aria-expanded', dd.classList.contains('open') ? 'true' : 'false');
+        } else if (!dd.contains(e.target)) {
+          dd.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+  </script>
+  {{ is_admin|json_script:"is-admin-flag" }}
+  <script>window.IS_ADMIN = JSON.parse(document.getElementById("is-admin-flag").textContent);</script>
+  <script src="{% static 'js/script.js' %}?v=1.9.7-hf2" type="module"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

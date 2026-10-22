@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Selamat datang di Admin Dashboard</h2>
+    {% if is_admin %}
+    <p class="text-success">Konten khusus admin ditampilkan di sini.</p>
+    {% else %}
+    <p class="text-danger">Anda adalah pengguna biasa. Konten admin tidak tersedia.</p>
+    {% endif %}
+</div>
+{% endblock %}
+{% block audit_trail %}
+<section class="container mt-4">
+    {% include 'components/change_logs_component.html' %}
+</section>
+
+{% endblock %}

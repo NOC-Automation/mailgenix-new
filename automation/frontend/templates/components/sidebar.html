@@ -1,0 +1,18 @@
+<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="dashboard" aria-controls="panel-dashboard"><svg viewBox="0 0 24 24" fill="none"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3v-9.5Z" stroke="currentColor" stroke-width="1.8"/></svg><span>Dashboard</span></button>
+<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="sequence" aria-controls="panel-sequence"><svg viewBox="0 0 24 24" fill="none"><path d="m7 5 10 7-10 7V5Z" stroke="currentColor" stroke-width="1.8"/></svg><span>Sequence Management</span></button>
+<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="tenant" aria-controls="panel-tenant"><svg viewBox="0 0 24 24" fill="none"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3 20v-2a5 5 0 0 1 10 0v2M16 10a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" stroke="currentColor" stroke-width="1.7"/></svg><span>Tenant List</span></button>
+<div class="mg-nav-group" data-nav-group="report">
+  <button id="mgReportToggle" class="mg-nav-item mg-nav-parent" type="button" aria-expanded="false" aria-controls="mgReportSubmenu">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="1.8"/></svg>
+    <span>Report</span><span class="mg-nav-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div id="mgReportSubmenu" class="mg-nav-submenu" hidden>
+    <button class="tab-btn mg-nav-item mg-nav-child" type="button" role="tab" data-tab="report" aria-controls="panel-report"><span>Remote Hands Report</span></button>
+    <button class="tab-btn mg-nav-item mg-nav-child" type="button" role="tab" data-tab="checklist" aria-controls="panel-checklist"><span>Checklist</span></button>
+  </div>
+</div>
+<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="mailing" aria-controls="panel-mailing"><svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3V6Zm0 1 9 6 9-6" stroke="currentColor" stroke-width="1.7"/></svg><span>Mailing List</span></button>
+<div class="mg-nav-divider"></div>
+<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="activity" aria-controls="panel-activity"><span>Activity Log</span><span class="mg-nav-badge">NEW</span></button>
+<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="changelog" aria-controls="panel-changelog"><span>Changelog</span><span class="mg-nav-badge">NEW</span></button>
+{% if is_admin %}<button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="mailing-groups" aria-controls="panel-mailing-groups"><span>Mailing Group</span></button><button class="tab-btn mg-nav-item" type="button" role="tab" data-tab="users" aria-controls="panel-users"><span>User Management</span></button>{% endif %}

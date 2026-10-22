@@ -1,0 +1,11 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "scripts": {
+    "build:css": "tailwindcss -i ./frontend/templates/static/css/input.css -o ./frontend/templates/static/css/tailwind.css --minify",
+    "dev:css": "tailwindcss -i ./frontend/templates/static/css/input.css -o ./frontend/templates/static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.13"
+  }
+}

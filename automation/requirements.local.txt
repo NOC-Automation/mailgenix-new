@@ -1,0 +1,5 @@
+Django==5.2.8
+dj-database-url==2.3.0
+python-dotenv==1.2.1
+whitenoise==6.11.0
+requests==2.32.5

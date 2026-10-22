@@ -1,0 +1,36 @@
+<div id="mailingGroupManagement" class="mg-management-page">
+  <div class="mg-page-head">
+    <div>
+      <p class="mg-eyebrow">Management</p>
+      <h2>Mailing Group</h2>
+      <p>Kelola recipient grouping dinamis berdasarkan Site, satu atau beberapa Floor, dan Specific Customer. Membership customer dihitung sebagai union lalu dideduplicate.</p>
+    </div>
+    <button id="mgGroupAddButton" type="button" class="workspace-primary-btn">+ Add Mailing Group</button>
+  </div>
+
+  <section class="mg-management-card overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="mg-management-table">
+        <thead><tr><th>Name</th><th>Site</th><th>Floors / Specific Customer</th><th>Recipients</th><th>Status</th><th class="text-right">Action</th></tr></thead>
+        <tbody id="mgGroupTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="mgGroupEditor" class="mg-management-card mg-editor-card hidden">
+    <div class="mg-editor-head">
+      <div><p class="mg-eyebrow">Mailing Group Rule</p><h3 id="mgGroupEditorTitle">Add Mailing Group</h3><p>Floor akan selalu ditampilkan dari level terkecil ke terbesar untuk Site yang dipilih.</p></div>
+      <button id="mgGroupEditorClose" type="button" class="mg-icon-btn" aria-label="Close">×</button>
+    </div>
+    <form id="mgGroupForm" class="mg-editor-form">
+      <input id="mgGroupId" type="hidden">
+      <div class="mg-form-field"><label for="mgGroupName">Group Name</label><input id="mgGroupName" class="mg-field" placeholder="Contoh: JKT3 General" required></div>
+      <div class="mg-form-field"><label for="mgGroupSite">Site</label><select id="mgGroupSite" class="mg-field" required><option value="">Choose Site</option>{% for site in site_locations %}<option value="{{ site.id }}">{{ site.name }}</option>{% endfor %}</select></div>
+      <div class="mg-form-field mg-span-2"><div class="mg-field-heading"><div><label>Floors</label><p>Pilih satu atau beberapa floor pada site tersebut.</p></div><span id="mgSelectedFloorCount" class="mg-soft-badge">0 selected</span></div><div id="mgGroupFloors" class="mg-floor-grid">{% for floor in floor_levels %}<label data-mailing-floor data-site-id="{{ floor.site_location.id }}" data-floor-name="{{ floor.name }}" class="mg-floor-option hidden"><input type="checkbox" value="{{ floor.id }}"><span>{{ floor.name }}</span></label>{% endfor %}</div></div>
+      <div class="mg-form-field mg-span-2"><div class="mg-field-heading"><div><label>Specific Customers</label><p>Default menampilkan customer pada Site + Floor terpilih. Aktifkan override untuk memilih customer lain pada site yang sama.</p></div><span id="mgSelectedCustomerCount" class="mg-soft-badge">0 selected</span></div><div class="mg-specific-toolbar"><input id="mgCustomerSearch" class="mg-field" type="search" placeholder="Search customer..."><label class="mg-override-toggle"><input id="mgCustomerOverride" type="checkbox"> Show customers outside selected floors</label></div><div id="mgGroupCustomers" class="mg-customer-picker">{% for c in customers_with_racks %}<label class="mg-customer-option" data-customer-id="{{ c.id }}" data-customer-name="{{ c.name_customer|lower }}" data-location-pairs="{% for rk in c.racks.all %}{{ rk.floor_level.site_location.id }}:{{ rk.floor_level.id }}{% if not forloop.last %},{% endif %}{% endfor %}"><input type="checkbox" value="{{ c.id }}"><span>{{ c.name_customer }}</span></label>{% endfor %}</div></div>
+      <div class="mg-form-field mg-span-2"><label for="mgGroupDescription">Description</label><textarea id="mgGroupDescription" rows="4" class="mg-field" placeholder="Optional description"></textarea></div>
+      <label class="mg-toggle-row"><input id="mgGroupActive" type="checkbox" checked><span><strong>Active</strong><small>Inactive group tidak dapat dipilih pada Email Composer.</small></span></label>
+      <div class="mg-editor-actions mg-span-2"><button id="mgGroupCancel" type="button" class="workspace-secondary-btn">Cancel</button><button type="submit" class="workspace-primary-btn">Save Mailing Group</button></div>
+    </form>
+  </section>
+</div>
